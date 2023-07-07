@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Aggregator</title>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+</head>
+<body>
+    <h3>News...</h3>
+    <hr />
+    <ul x-data="{ articles: [] }" x-init="loadArticles">
+        <template x-for="article in articles" :key="article.title">
+            <li>
+                <a :href="article.link" :title="article.title" x-text="article.title"></a>
+                <span x-text="formatDate(article.published_date)"></span>
+            </li>
+        </template>
+    <ul/>
+
+    <script>
+        async function loadArticles() {
+            try {
+                const response = await fetch('/articles');
+                this.articles = await response.json();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+            });
+        }
+    </script>
+</body>
+</html>
